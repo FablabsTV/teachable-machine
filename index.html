@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -22,9 +21,8 @@ const URL = "https://teachablemachine.withgoogle.com/models/Uypb2d_LK/";
 
 let model, webcam, labelContainer, maxPredictions;
 let letzterText = "";
-let schonGesprochen = false;
-async function init() {
 
+async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
@@ -51,6 +49,7 @@ async function loop() {
     await predict();
     window.requestAnimationFrame(loop);
 }
+
 async function predict() {
     const prediction = await model.predict(webcam.canvas);
 
