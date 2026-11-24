@@ -51,15 +51,12 @@ async function loop() {
     await predict();
     window.requestAnimationFrame(loop);
 }
-
 async function predict() {
-
     const prediction = await model.predict(webcam.canvas);
 
     let beste = prediction[0];
 
     for (let i = 0; i < maxPredictions; i++) {
-
         if (prediction[i].probability > beste.probability) {
             beste = prediction[i];
         }
@@ -69,25 +66,19 @@ async function predict() {
             prediction[i].probability.toFixed(2);
     }
 
-    if (beste.probability > 0.90) {
+    if (beste.probability > 0.90 &&
+        beste.className !== letzterText) {
 
-  if (beste.className !== letzterText && !schonGesprochen) {
+        letzterText = beste.className;
 
-            letzterText = beste.className;
+        const stimme = new SpeechSynthesisUtterance(
+            "Hallo! Ich habe " + beste.className + " erkannt!"
+        );
 
-            const stimme = new SpeechSynthesisUtterance(
-                "Hallo! Ich habe " + beste.className + " erkannt!"
-            );
-
-            stimme.lang = "de-DE";
-           window.speechSynthesis.speak(stimme);
-schonGesprochen = true;
+        stimme.lang = "de-DE";
+        window.speechSynthesis.speak(stimme);
+    }
 }
-} else {
-    letzterText = "";
-
-}
-
 </script>
 </body>
 </html>
