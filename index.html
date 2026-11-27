@@ -21,6 +21,8 @@ const URL = "https://teachablemachine.withgoogle.com/models/Uypb2d_LK/";
 
 let model, webcam, labelContainer, maxPredictions;
 let letzterText = "";
+let kandidatText = "";
+let kandidatZaehler = 0;
 
 async function init() {
     const modelURL = URL + "model.json";
@@ -65,17 +67,31 @@ async function predict() {
             prediction[i].probability.toFixed(2);
     }
 
-    if (beste.probability > 0.90 &&
-        beste.className !== letzterText) {
+    if (beste.probability > 0.90) {
 
-        letzterText = beste.className;
+        if (beste.className === kandidatText) {
+            kandidatZaehler++;
+        } else {
+            kandidatText = beste.className;
+            kandidatZaehler = 1;
+        }
 
-        const stimme = new SpeechSynthesisUtterance(
-            "Hallo! Ich habe " + beste.className + " erkannt!"
-        );
+        if (kandidatZaehler >= 12 &&
+            beste.className !== letzterText) {
 
-        stimme.lang = "de-DE";
-        window.speechSynthesis.speak(stimme);
+            letzterText = beste.className;
+
+            const stimme = new SpeechSynthesisUtterance(
+                "Hallo! Ich habe " + beste.className + " erkannt!"
+            );
+
+            stimme.lang = "de-DE";
+            window.speechSynthesis.speak(stimme);
+        }
+
+    } else {
+        kandidatText = "";
+        kandidatZaehler = 0;
     }
 }
 </script>
